@@ -36,6 +36,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @IBAction func showPreferencesAction(_ sender: Any?) {
+        let mainWindows = NSApplication.shared.windows.filter { $0.title == ((Bundle.main.infoDictionary?["CFBundleName"] as? String) ?? "") }
+        if mainWindows.filter({ $0.isVisible }).count <= 0 {
+            mainWindows.filter({ !$0.isVisible }).first?.setIsVisible(true)
+        }
         let preferencesTitle = "偏好设置"
         for window in NSApplication.shared.windows {
             if window.title == preferencesTitle {
@@ -57,7 +61,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
     }
-
+    
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        let mainWindows = NSApplication.shared.windows.filter { $0.title == ((Bundle.main.infoDictionary?["CFBundleName"] as? String) ?? "") }
+        if mainWindows.filter({ $0.isVisible }).count <= 0 {
+            mainWindows.filter({ !$0.isVisible }).first?.setIsVisible(true)
+        }
+        return true
+    }
+    
     func applicationSupportsSecureRestorableState(_ app: NSApplication) -> Bool {
         return true
     }
