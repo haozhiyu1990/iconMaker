@@ -242,11 +242,28 @@ class ViewController: NSViewController {
             save.beginSheetModal(for: window) { reponse in
                 if reponse == .OK {
                     self.exprotIconFileWithPath(url: save.url)
+                } else {
+                    self.removeGenerateFile()
                 }
             }
         } else {
             if save.runModal() == .OK {
                 exprotIconFileWithPath(url: save.url)
+            } else {
+                removeGenerateFile()
+            }
+        }
+    }
+    
+    func removeGenerateFile() {
+        guard let zipUrl = getOutFileUrl() else { return }
+        if let subPaths = FileManager.default.subpaths(atPath: zipUrl.path) {
+            for subPath in subPaths.reversed() {
+                do {
+                    try FileManager.default.removeItem(at: zipUrl.appendingPathComponent(subPath))
+                } catch {
+                    print(error)
+                }
             }
         }
     }
